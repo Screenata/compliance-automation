@@ -204,6 +204,4 @@ MIT
 
 ## About
 
-Created by [Screenata](https://screenata.com) - Automated SOC 2 evidence collection.
-
-These policies are drafts. The real work is proving they're implemented.
+Created by [Screenata](https://screenata.com) - Automated procedural compliance evidence collection.
