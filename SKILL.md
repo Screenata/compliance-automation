@@ -401,28 +401,47 @@ Only show options with SaaS/Cloud if they were enabled in Step 2.
 
 #### Step 7a: Set Up & Test Evidence Scripts
 
+**Resume check:** Before starting, check existing progress:
+1. Read `.compliance/status.md` — check the "SaaS Tool Configuration" and "Cloud Provider Configuration" tables for checkmarks
+2. Check for existing `.compliance/scripts/{tool}.sh` files (script already copied/generated)
+3. Check for existing `.compliance/scripts/{tool}.config.json` files (config already provided)
+4. Check `.compliance/secrets.env` for existing tokens (e.g., `OKTA_API_TOKEN` is already set)
+
+If any tools have partial or complete progress, present a status summary:
+> Picking up evidence collection. Here's where we are:
+>
+> | Tool | Script | Config | Tested | Workflow |
+> |------|--------|--------|--------|----------|
+> | Okta | [x] | [x] | [x] | [ ] |
+> | Datadog | [x] | [x] | [ ] | [ ] |
+> | Jira | [ ] | [ ] | [ ] | [ ] |
+>
+> I'll continue with testing Datadog, then set up Jira.
+> Want to skip any tools, or continue with all?
+
+**Skip any tool that already has all checkmarks** (Script + Config + Tested). For partially completed tools, resume from the next incomplete step — don't re-ask for config values that already exist in `{tool}.config.json` or tokens already in `secrets.env`.
+
 For each tool/provider selected, set up an evidence collection script + config pair. Follow [references/script-templates.md](references/script-templates.md) for conventions.
 
 Pre-built scripts for 21 common tools are available in `assets/scripts/`. Use the **copy-first** approach — fall back to generating on demand only when needed.
 
-**For each SaaS tool:**
-1. **If pre-built script exists** in `assets/scripts/{tool}.sh`: copy it to `.compliance/scripts/{tool}.sh`
-2. **If no pre-built script**: generate one using API patterns from `references/saas-integrations/{category}.md`
-3. **Update `.compliance/status.md`** — mark `[x] Script` for this tool in the "SaaS Tool Configuration" table.
-4. Ask the user for non-secret config values (domain, project key, etc.) and write to `.compliance/scripts/{tool}.config.json`
-5. **Update `.compliance/status.md`** — mark `[x] Config` for this tool.
-6. Ask the user to add the required API token to `.compliance/secrets.env` (create the file if needed, add `.compliance/secrets.env` to `.gitignore`): `{TOOL}_API_TOKEN=your-token-here`
-7. Source secrets and test: `set -a; source .compliance/secrets.env; set +a && bash .compliance/scripts/{tool}.sh`
-8. Read the output evidence file and verify it looks correct
-9. If there are errors (API changed, missing fields), fix the script and rerun — this is the **generate fallback**
-10. Repeat until all evidence rows are populated correctly
-11. **Update `.compliance/status.md`** — mark `[x] Tested` for this tool.
+**For each SaaS tool** (skip steps that are already complete):
+1. **If `.compliance/scripts/{tool}.sh` already exists**, skip to step 4. Otherwise: **if pre-built script exists** in `assets/scripts/{tool}.sh`, copy it to `.compliance/scripts/{tool}.sh`. **If no pre-built script**, generate one using API patterns from `references/saas-integrations/{category}.md`.
+2. **Update `.compliance/status.md`** — mark `[x] Script` for this tool in the "SaaS Tool Configuration" table.
+3. **If `.compliance/scripts/{tool}.config.json` already exists**, skip to step 6. Otherwise: ask the user for non-secret config values (domain, project key, etc.) and write to `.compliance/scripts/{tool}.config.json`.
+4. **Update `.compliance/status.md`** — mark `[x] Config` for this tool.
+5. **Check `.compliance/secrets.env`** for the required token (e.g., `OKTA_API_TOKEN`). If already present, skip to step 7. Otherwise: ask the user to add the required API token to `.compliance/secrets.env`: `{TOOL}_API_TOKEN=your-token-here`
+6. Source secrets and test: `set -a; source .compliance/secrets.env; set +a && bash .compliance/scripts/{tool}.sh`
+7. Read the output evidence file and verify it looks correct
+8. If there are errors (API changed, missing fields), fix the script and rerun — this is the **generate fallback**
+9. Repeat until all evidence rows are populated correctly
+10. **Update `.compliance/status.md`** — mark `[x] Tested` for this tool.
 
 Do the same for cloud providers in the "Cloud Provider Configuration" table.
 
-**For cloud providers:**
-1. Generate `.compliance/scripts/{provider}.sh` using CLI patterns from `references/scanning-patterns/{provider}.md`
-2. Write `.compliance/scripts/{provider}.config.json` with region and other settings
+**For cloud providers** (skip steps that are already complete):
+1. **If `.compliance/scripts/{provider}.sh` already exists**, skip to step 4. Otherwise: generate using CLI patterns from `references/scanning-patterns/{provider}.md`.
+2. **If `.compliance/scripts/{provider}.config.json` already exists**, skip to step 4. Otherwise: write config with region and other settings.
 3. **Update `.compliance/status.md`** — mark `[x] Script` and `[x] Config` for this provider in the "Cloud Provider Configuration" table.
 4. Verify cloud CLI is authenticated (`aws sts get-caller-identity`, `gcloud auth list`, etc.)
 5. Run `bash .compliance/scripts/{provider}.sh` to test
@@ -430,10 +449,11 @@ Do the same for cloud providers in the "Cloud Provider Configuration" table.
 7. **Update `.compliance/status.md`** — mark `[x] Tested` for this provider.
 
 **For code scanning:**
-1. Generate `.compliance/scripts/code-scan.sh` using patterns from `references/scanning-patterns/{policy-id}.md`
-2. Run `bash .compliance/scripts/code-scan.sh` to test
-3. Verify the output contains detected patterns
-4. **Update `.compliance/status.md`** — mark code scanning as tested.
+1. **If `.compliance/scripts/code-scan.sh` already exists and status.md shows tested**, skip entirely.
+2. Otherwise: generate `.compliance/scripts/code-scan.sh` using patterns from `references/scanning-patterns/{policy-id}.md`
+3. Run `bash .compliance/scripts/code-scan.sh` to test
+4. Verify the output contains detected patterns
+5. **Update `.compliance/status.md`** — mark code scanning as tested.
 
 Copy `assets/scripts/collect-all.sh` to `.compliance/scripts/collect-all.sh` — the runner that executes all scripts in the directory.
 
