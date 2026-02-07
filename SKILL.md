@@ -4,7 +4,7 @@ description: Generate draft SOC 2 Type II policy documents with optional codebas
 license: MIT
 metadata:
   author: screenata
-  version: "2.0"
+  version: "3.0"
 ---
 
 # SOC 2 Policy Generator
