@@ -4,7 +4,7 @@ description: Generate draft SOC 2 Type II policy documents with optional codebas
 license: MIT
 metadata:
   author: screenata
-  version: "2.1"
+  version: "2.2"
 ---
 
 # SOC 2 Policy Generator
@@ -253,15 +253,15 @@ The "Answers" column links to `.compliance/answers/{policy-id}.md`. The "Policy 
 
 ### Step 2: Choose Evidence Collection Method
 
-After gathering context, ask:
-> How would you like to collect evidence for the policies?
-> 1. Code + Cloud + SaaS — scan codebase, cloud infrastructure, AND SaaS tool APIs (most comprehensive)
-> 2. Code + Cloud — scan codebase and live cloud infrastructure
-> 3. Code + SaaS — scan codebase and SaaS tool APIs
-> 4. Code only — scan codebase for security patterns (auth, encryption, CI/CD)
+**Default: Code + Cloud + SaaS.** After gathering context, tell the user the default and offer to change it:
+> I'll scan your codebase, cloud infrastructure, and SaaS tools for evidence. Want to adjust?
+> 1. **Code + Cloud + SaaS** — scan all three (default)
+> 2. Code + Cloud — skip SaaS tools
+> 3. Code + SaaS — skip cloud infrastructure
+> 4. Code only — scan codebase for security patterns only
 > 5. Q&A only — generate policies based on your answers only
 
-Only show SaaS options (1, 3) if the user listed SaaS tools in Q13.
+If the user listed no SaaS tools in Q13, default to Code + Cloud instead and hide SaaS options (1, 3).
 
 **If user chooses an option with Cloud:**
 First, detect available cloud CLIs and verify authentication per [cloud-shared.md](references/scanning-patterns/cloud-shared.md). Report which providers are available. Ask which region(s) to scan. Then scan both codebase (using per-policy scanning files) and cloud infrastructure (using provider files) for the selected policy.
