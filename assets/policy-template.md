@@ -169,7 +169,42 @@ If both codebase and cloud evidence exist for overlapping controls, include a dr
 | S3 encryption | **SSE-KMS** (`infrastructure/s3.tf:15`) | **SSE-S3** (`aws s3api get-bucket-encryption`) | MISMATCH - review |
 ```
 
-### 8c. Automated Evidence Collection (if workflows were generated)
+### 8d. Evidence from SaaS Tools (if SaaS scanning was performed)
+
+Include this section when SaaS API scanning detected relevant configurations. Place it AFTER cloud evidence (if present) and BEFORE "Automated Evidence Collection" / "Proof Required Later". Use the 5-column format with Tool and API Endpoint columns:
+
+```markdown
+## Evidence from SaaS Tools
+
+The following configurations were detected from SaaS tool APIs:
+
+| Control | Extracted Value | Tool | API Endpoint | Raw Evidence |
+|---------|----------------|------|-------------|-------------|
+| MFA enrollment rate | **96% (48/50 users)** | Okta | `/api/v1/users + /factors` | 48 of 50 active users have MFA factor enrolled |
+| Password min length | **12 characters** | Okta | `/api/v1/policies?type=PASSWORD` | Password policy minLength: 12 |
+| Escalation policies | **3 configured** | PagerDuty | `/escalation_policies` | 3 escalation policies defined |
+| Open change tickets | **12 open, 45 resolved (30d)** | Jira | `/rest/api/3/search` | 12 open, 45 resolved in project SOC2 |
+
+*Values extracted from SaaS tool APIs. These represent point-in-time configuration. Re-scan and verify before audit submission.*
+```
+
+### Cross-Source Evidence Comparison
+
+When evidence exists from multiple sources (code, cloud, SaaS), include a comparison table for overlapping controls:
+
+```markdown
+### Cross-Source Evidence Comparison
+
+| Control | Code | Cloud | SaaS | Status |
+|---------|------|-------|------|--------|
+| MFA required | **configured** (`auth.ts:12`) | **enabled** (AWS IAM) | **96% enrolled** (Okta) | Consistent |
+| Password min length | **12 chars** (`password.ts:18`) | **14 chars** (AWS IAM) | **12 chars** (Okta) | MISMATCH — AWS IAM stricter |
+| Required reviewers | **2** (`main.tf:45`) | — | **2** (GitHub API) | Match |
+```
+
+This replaces the simpler IaC vs Live drift table when SaaS evidence is also available.
+
+### 8e. Automated Evidence Collection (if workflows were generated)
 
 If GitHub Actions workflows were set up (Step 7), add a reference:
 
@@ -343,11 +378,22 @@ The following security configurations were detected and their concrete values ex
 
 *Values extracted from live cloud infrastructure. Re-scan and verify before audit submission.*
 
-### IaC vs Live Infrastructure Comparison
+## Evidence from SaaS Tools
 
-| Control | IaC Value | Cloud Value | Status |
-|---------|-----------|-------------|--------|
-| Password min length | **12 chars** (`src/validation/password.ts:18`) | **14 chars** (`aws iam get-account-password-policy`) | MISMATCH - IAM policy is stricter |
+| Control | Extracted Value | Tool | API Endpoint | Raw Evidence |
+|---------|----------------|------|-------------|-------------|
+| MFA enrollment | **96% (48/50 users)** | Okta | `/api/v1/users + /factors` | 48 of 50 active users have active MFA factor |
+| Password policy | **12 chars, complexity required** | Okta | `/api/v1/policies?type=PASSWORD` | minLength: 12, requireUppercase: true |
+| Deactivated users (30d) | **2 users** | Okta | `/api/v1/users?filter=status eq "DEPROVISIONED"` | 2 users deprovisioned in last 30 days |
+
+*Values extracted from SaaS tool APIs. Re-scan and verify before audit submission.*
+
+### Cross-Source Evidence Comparison
+
+| Control | Code | Cloud | SaaS | Status |
+|---------|------|-------|------|--------|
+| Password min length | **12 chars** (`password.ts:18`) | **14 chars** (AWS IAM) | **12 chars** (Okta) | MISMATCH — AWS IAM is stricter than code/Okta |
+| MFA required | **configured** (`auth.ts:12`) | **enabled** (AWS IAM root) | **96% enrolled** (Okta) | Consistent — 4% gap needs investigation |
 
 ## Proof Required Later
 

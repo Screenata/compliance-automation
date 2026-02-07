@@ -10,8 +10,9 @@ Generate two workflows:
 |--------------|---------|-------------|
 | `soc2-code-scan.yml` | PR + weekly + manual | Runs Glob/Grep patterns against the codebase, outputs 5-column evidence tables |
 | `soc2-cloud-scan.yml` | Weekly/monthly + manual | Runs cloud CLI commands, outputs 6-column evidence tables |
+| `soc2-saas-scan.yml` | Weekly + manual | Runs SaaS API calls, outputs 5-column evidence tables |
 
-Only generate `soc2-cloud-scan.yml` if the user chose "Code + Cloud" in Step 2.
+Only generate `soc2-cloud-scan.yml` if the user chose a Cloud option in Step 2. Only generate `soc2-saas-scan.yml` if the user configured SaaS tools in Step 1 (Q13) and chose a SaaS option in Step 2.
 
 ## Schedule Mapping
 
@@ -25,10 +26,21 @@ Map policies to scan frequencies based on typical audit expectations:
 
 ## Output Structure
 
-All evidence files go to `soc2-evidence/` in the repository root:
+Evidence scripts live in `.compliance/scripts/`, evidence output goes to `.compliance/evidence/`:
 
 ```
-soc2-evidence/
+.compliance/scripts/
+  collect-all.sh              # Runner: executes all *.sh scripts
+  okta.sh                     # (generated per user's SaaS stack)
+  okta.config.json
+  pagerduty.sh
+  pagerduty.config.json
+  aws.sh                      # (generated per cloud provider)
+  aws.config.json
+  code-scan.sh                # (codebase scanning)
+  ...
+
+.compliance/evidence/
   code/
     access-control-evidence.md
     change-management-evidence.md
@@ -42,10 +54,18 @@ soc2-evidence/
     gcp-evidence.json
     azure-evidence.md       (if applicable)
     azure-evidence.json
+  saas/
+    okta-evidence.md        (if applicable)
+    pagerduty-evidence.md   (if applicable)
+    jira-evidence.md        (if applicable)
+    github-evidence.md      (if applicable)
+    (one file per configured SaaS tool)
   drift/
-    drift-report.md         (IaC vs live comparison)
+    drift-report.md         (IaC vs live + cross-source comparison)
   README.md                 (auto-generated index with timestamps)
 ```
+
+Scripts are generated and tested locally by the agent (Step 7a), then wired into workflows (Step 7b). See [script-templates.md](script-templates.md) for the script template and test-first workflow.
 
 ## Evidence File Format
 
@@ -53,7 +73,7 @@ soc2-evidence/
 
 Each file starts with a metadata header, then evidence tables matching the policy template formats.
 
-**Code evidence (`soc2-evidence/code/{policy-id}-evidence.md`):**
+**Code evidence (`.compliance/evidence/code/{policy-id}-evidence.md`):**
 ```markdown
 # {Policy Name} - Code Evidence
 
@@ -66,7 +86,7 @@ Each file starts with a metadata header, then evidence tables matching the polic
 | ... | ... | ... | ... | ... |
 ```
 
-**Cloud evidence (`soc2-evidence/cloud/{provider}-evidence.md`):**
+**Cloud evidence (`.compliance/evidence/cloud/{provider}-evidence.md`):**
 ```markdown
 # {Provider} Cloud Infrastructure Evidence
 
@@ -100,7 +120,7 @@ Mirror the table structure for programmatic access:
 }
 ```
 
-### Drift Report (`soc2-evidence/drift/drift-report.md`)
+### Drift Report (`.compliance/evidence/drift/drift-report.md`)
 
 Generated when both code and cloud evidence exist:
 
@@ -115,7 +135,7 @@ Generated when both code and cloud evidence exist:
 | S3 encryption | **SSE-KMS** | **SSE-S3** | MISMATCH |
 ```
 
-### Evidence README (`soc2-evidence/README.md`)
+### Evidence README (`.compliance/evidence/README.md`)
 
 Auto-generated index:
 
@@ -145,41 +165,20 @@ Automated evidence collected by GitHub Actions workflows.
 Use the YAML template at [assets/workflow-soc2-code-scan.yml.template](../assets/workflow-soc2-code-scan.yml.template) as the base structure.
 
 **Customization rules:**
-- Only include steps for policies the user has generated
-- Each policy gets its own step with the relevant grep/glob patterns from `references/scanning-patterns/{policy-id}.md`
-- Translate Glob patterns to `find` commands and Grep patterns to `grep -rE` commands
-- Format output as markdown tables using `echo` and shell string formatting
-- Final step commits all evidence files to the `soc2-evidence/code/` directory
+- The agent generates a `.compliance/scripts/code-scan.sh` script with the relevant grep/glob patterns
+- Only include patterns for policies the user has generated
+- Patterns come from `references/scanning-patterns/{policy-id}.md`
+- The script is tested locally before being wired into the workflow
+- The workflow step just calls `bash .compliance/scripts/code-scan.sh`
+- Final step commits all evidence files to the `.compliance/evidence/code/` directory
 
-**Example step for access-control policy:**
+**Workflow step:**
 ```yaml
-- name: Scan Access Control patterns
-  run: |
-    echo "# Access Control - Code Evidence" > soc2-evidence/code/access-control-evidence.md
-    echo "" >> soc2-evidence/code/access-control-evidence.md
-    echo "> Scan date: $(date -u '+%Y-%m-%d %H:%M UTC')" >> soc2-evidence/code/access-control-evidence.md
-    echo "> Git SHA: ${GITHUB_SHA::8}" >> soc2-evidence/code/access-control-evidence.md
-    echo "" >> soc2-evidence/code/access-control-evidence.md
-    echo "| Control | Extracted Value | File | Line | Raw Evidence |" >> soc2-evidence/code/access-control-evidence.md
-    echo "|---------|----------------|------|------|-------------|" >> soc2-evidence/code/access-control-evidence.md
-
-    # Auth middleware detection
-    grep -rnE 'withAuth|requireAuth|isAuthenticated|authMiddleware' --include='*.ts' --include='*.js' src/ \
-      | head -5 \
-      | while IFS=: read -r file line match; do
-          echo "| Auth middleware | **detected** | $file | $line | \`$(echo "$match" | head -c 60)\` |"
-        done >> soc2-evidence/code/access-control-evidence.md
-
-    # Password minimum length
-    grep -rnE 'min(?:imum)?[_-]?(?:length|len).*[:=]\s*(\d+)' --include='*.ts' --include='*.js' --include='*.json' . \
-      | head -3 \
-      | while IFS=: read -r file line match; do
-          value=$(echo "$match" | grep -oE '[0-9]+' | tail -1)
-          echo "| Password min length | **${value} characters** | $file | $line | \`$(echo "$match" | xargs | head -c 60)\` |"
-        done >> soc2-evidence/code/access-control-evidence.md
-
-    # (additional patterns from access-control.md...)
+- name: Scan codebase patterns
+  run: bash .compliance/scripts/code-scan.sh
 ```
+
+The script itself contains the grep/find patterns. See [script-templates.md](script-templates.md) for the code scan script template.
 
 ---
 
@@ -231,8 +230,8 @@ aws-scan:
 
     - name: Initialize evidence file
       run: |
-        mkdir -p soc2-evidence/cloud
-        cat > soc2-evidence/cloud/aws-evidence.md << 'HEADER'
+        mkdir -p .compliance/evidence/cloud
+        cat > .compliance/evidence/cloud/aws-evidence.md << 'HEADER'
         # AWS Cloud Infrastructure Evidence
 
         > Scan date: $(date -u '+%Y-%m-%d %H:%M UTC')
@@ -246,7 +245,7 @@ aws-scan:
         if echo "$result" | jq -e '.PasswordPolicy' > /dev/null 2>&1; then
           min_length=$(echo "$result" | jq -r '.PasswordPolicy.MinimumPasswordLength')
           max_age=$(echo "$result" | jq -r '.PasswordPolicy.MaxPasswordAge')
-          echo "| Password min length | **${min_length} characters** | AWS IAM | global | \`aws iam get-account-password-policy\` | \`MinimumPasswordLength: ${min_length}\` |" >> soc2-evidence/cloud/aws-evidence.md
+          echo "| Password min length | **${min_length} characters** | AWS IAM | global | \`aws iam get-account-password-policy\` | \`MinimumPasswordLength: ${min_length}\` |" >> .compliance/evidence/cloud/aws-evidence.md
         fi
 
     # (additional scan steps from aws.md...)
@@ -255,7 +254,7 @@ aws-scan:
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add soc2-evidence/
+        git add .compliance/evidence/
         git diff --staged --quiet || git commit -m "chore: update SOC 2 cloud evidence [skip ci]"
         git push
 ```
@@ -361,13 +360,69 @@ Recommend: Use **GitHub OIDC** with `aws-actions/configure-aws-credentials@v4` a
 
 ---
 
+## SaaS Scan Workflow Template (`soc2-saas-scan.yml`)
+
+Generate this workflow when the user configured SaaS tools in Step 1 (Q13). Use the YAML template at [assets/workflow-soc2-saas-scan.yml.template](../assets/workflow-soc2-saas-scan.yml.template) as the base structure.
+
+**Structure:**
+```yaml
+name: SOC 2 SaaS Evidence Collection
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Weekly Monday
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  collect-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # One step per SaaS tool — each calls a tested script
+      - name: "Scan: Okta"
+        env:
+          OKTA_API_TOKEN: ${{ secrets.OKTA_API_TOKEN }}
+        run: |
+          if [ -z "$OKTA_API_TOKEN" ]; then echo "Skipping Okta (no token)"; exit 0; fi
+          bash .compliance/scripts/okta.sh
+      # Final step: commit to .compliance/evidence/saas/
+```
+
+**Customization rules:**
+- Each SaaS tool gets a standalone script in `.compliance/scripts/{tool}.sh` with a co-located `{tool}.config.json`
+- Scripts are generated and tested locally by the agent before workflow generation
+- Workflows are thin wrappers — they just call the scripts with secrets injected
+- Use inline `if [ -z "$TOKEN" ]; then exit 0; fi` checks so missing secrets skip gracefully (step-level `env` vars are not available in GitHub Actions `if:` conditions)
+- The agent uses API patterns from `references/saas-integrations/{category}.md` when generating scripts
+- All API calls in scripts are GET requests only — never POST/PUT/DELETE
+- Scripts handle rate limits and PII redaction internally
+
+**Output:**
+- Evidence files go to `.compliance/evidence/saas/{tool}-evidence.md`
+- Each file uses the 5-column SaaS evidence table format
+- Final step updates `.compliance/evidence/README.md` index
+
+**SaaS Secrets naming convention:**
+
+| Pattern | Examples |
+|---------|---------|
+| `{TOOL}_API_TOKEN` | `OKTA_API_TOKEN`, `PAGERDUTY_API_TOKEN`, `LINEAR_API_KEY` |
+| `{TOOL}_DOMAIN` | `OKTA_DOMAIN`, `JIRA_DOMAIN` |
+| `{TOOL}_CLIENT_ID` + `{TOOL}_CLIENT_SECRET` | `AUTH0_CLIENT_ID`, `JAMF_CLIENT_ID` |
+
+See [references/saas-integrations/shared.md](saas-integrations/shared.md) for the full secrets table per tool.
+
+---
+
 ## Additive Workflow Generation
 
 When the user generates multiple policies across sessions:
 
-1. **Check if workflows already exist**: Read `.github/workflows/soc2-code-scan.yml` and `soc2-cloud-scan.yml`
-2. **If they exist**: Add new policy steps to the existing workflow rather than overwriting
+1. **Check if workflows already exist**: Read `.github/workflows/soc2-code-scan.yml`, `soc2-cloud-scan.yml`, and `soc2-saas-scan.yml`
+2. **If they exist**: Add new policy/tool steps to the existing workflow rather than overwriting
 3. **If they don't exist**: Create new workflow files from the templates
-4. **Deduplication**: If a policy's steps are already present, skip adding them again
+4. **Deduplication**: If a policy's or tool's steps are already present, skip adding them again
 
-This ensures the workflows grow incrementally as more policies are generated.
+This ensures the workflows grow incrementally as more policies are generated and more tools are configured.
