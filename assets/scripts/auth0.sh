@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for Auth0
 # Requires: AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET env vars
 # Config:   auth0.config.json { "domain": "company.us.auth0.com" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

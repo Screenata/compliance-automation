@@ -4,7 +4,7 @@
 # Requires: RIPPLING_API_TOKEN env var
 # Config:   rippling.config.json {}
 # Privacy: Only aggregate counts — no PII
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 OUT="${SOC2_EVIDENCE_DIR:-.compliance/evidence/saas}/$(basename "$0" .sh)-evidence.md"

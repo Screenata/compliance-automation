@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for SonarCloud / SonarQube
 # Requires: SONAR_TOKEN env var
 # Config:   sonarcloud.config.json { "project_key": "org_project", "base_url": "https://sonarcloud.io" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

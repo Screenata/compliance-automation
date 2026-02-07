@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for PagerDuty
 # Requires: PAGERDUTY_API_TOKEN env var
 # Config:   pagerduty.config.json {}
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 OUT="${SOC2_EVIDENCE_DIR:-.compliance/evidence/saas}/$(basename "$0" .sh)-evidence.md"

@@ -59,7 +59,7 @@ Every evidence collection script follows this pattern:
 # SOC 2 evidence collection for {Tool Name}
 # Requires: {TOOL}_API_TOKEN env var
 # Config:   {tool}.config.json (co-located)
-set -euo pipefail
+set -uo pipefail
 
 # ── Config ──────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -100,7 +100,7 @@ echo "OK: {tool} evidence written to $OUT"
 ```
 
 **Key patterns:**
-- `set -euo pipefail` — fail fast, but individual API calls use `|| echo "{}"` for graceful degradation
+- `set -uo pipefail` — catch unset variables and broken pipes, but don't exit on non-zero returns (grep returns 1 on no match, API calls may 404). Individual commands handle their own errors with `|| echo "{}"`
 - Config read with `jq -r '.key // empty'` — the `// empty` prevents null output
 - Output path derived from script name: `$(basename "$0" .sh)-evidence.md`
 - `SOC2_EVIDENCE_DIR` env var overrides default output directory
@@ -116,7 +116,7 @@ Discovers and runs all scripts automatically — no central registry needed:
 #!/usr/bin/env bash
 # .compliance/scripts/collect-all.sh
 # Runs all evidence collection scripts in this directory
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 echo "SOC 2 Evidence Collection — $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -306,7 +306,7 @@ Cloud scripts follow the same pattern but use CLI tools instead of curl:
 # SOC 2 evidence collection for AWS
 # Requires: AWS credentials configured (env vars or AWS CLI profile)
 # Config:   aws.config.json (co-located)
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"
@@ -350,7 +350,7 @@ Code scanning scripts use grep/find instead of API calls:
 # .compliance/scripts/code-scan.sh
 # SOC 2 evidence collection from codebase patterns
 # No external credentials needed
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="${SCRIPT_DIR}/../.."  # Adjust based on scripts/ location

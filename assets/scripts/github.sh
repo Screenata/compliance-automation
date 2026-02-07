@@ -4,7 +4,7 @@
 # Requires: GH_TOKEN env var (or gh CLI auto-auth in Actions)
 # Config:   github.config.json { "repo": "owner/repo" }
 # Note: In GitHub Actions, REPO is auto-set to ${{ github.repository }}
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

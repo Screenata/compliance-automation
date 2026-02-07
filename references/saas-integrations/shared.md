@@ -58,7 +58,7 @@ Every SaaS tool gets a standalone script (`.compliance/scripts/{tool}.sh`) + con
 # SOC 2 evidence collection for {Tool Name}
 # Requires: {TOOL}_API_TOKEN env var
 # Config:   {tool}.config.json (co-located)
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

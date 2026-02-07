@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for New Relic
 # Requires: NEWRELIC_API_KEY, NEWRELIC_ACCOUNT_ID env vars
 # Config:   newrelic.config.json { "account_id": "123456" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

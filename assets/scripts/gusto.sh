@@ -4,7 +4,7 @@
 # Requires: GUSTO_API_TOKEN env var
 # Config:   gusto.config.json { "company_id": "123456" }
 # Privacy: Only aggregate counts — no PII
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

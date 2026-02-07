@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for Slack
 # Requires: SLACK_BOT_TOKEN env var (scopes: team:read, channels:read)
 # Config:   slack.config.json {}
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 OUT="${SOC2_EVIDENCE_DIR:-.compliance/evidence/saas}/$(basename "$0" .sh)-evidence.md"

@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for Kandji
 # Requires: KANDJI_API_TOKEN env var
 # Config:   kandji.config.json { "subdomain": "company" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

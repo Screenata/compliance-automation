@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for Splunk Cloud
 # Requires: SPLUNK_TOKEN env var
 # Config:   splunk.config.json { "instance": "company" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

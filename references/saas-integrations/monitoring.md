@@ -29,7 +29,7 @@ TSC: CC7.1-7.2 (Vulnerability Monitoring), CC7.3-7.5 (Incident Response), A1.2 (
 # .compliance/scripts/datadog.sh (excerpt)
 # Requires: DATADOG_API_KEY, DATADOG_APP_KEY env vars
 # Config:   datadog.config.json { "site": "datadoghq.com" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

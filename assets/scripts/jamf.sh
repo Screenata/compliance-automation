@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for Jamf Pro
 # Requires: JAMF_CLIENT_ID, JAMF_CLIENT_SECRET env vars
 # Config:   jamf.config.json { "url": "https://company.jamfcloud.com" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

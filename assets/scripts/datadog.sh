@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for Datadog
 # Requires: DATADOG_API_KEY, DATADOG_APP_KEY env vars
 # Config:   datadog.config.json { "site": "datadoghq.com" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

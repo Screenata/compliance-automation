@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for Okta
 # Requires: OKTA_API_TOKEN env var
 # Config:   okta.config.json { "domain": "https://company.okta.com" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

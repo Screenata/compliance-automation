@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for Snyk
 # Requires: SNYK_TOKEN env var
 # Config:   snyk.config.json { "org_id": "abc-123" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

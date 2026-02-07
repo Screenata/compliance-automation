@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # .compliance/scripts/collect-all.sh
 # Runs all evidence collection scripts in this directory
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"

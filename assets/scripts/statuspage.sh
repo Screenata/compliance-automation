@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for Statuspage
 # Requires: STATUSPAGE_API_KEY env var
 # Config:   statuspage.config.json { "page_id": "abc123" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

@@ -3,7 +3,7 @@
 # SOC 2 evidence collection for Jira
 # Requires: JIRA_API_TOKEN, JIRA_EMAIL env vars
 # Config:   jira.config.json { "domain": "https://company.atlassian.net", "project": "ENG" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"

@@ -4,7 +4,7 @@ description: Generate draft SOC 2 Type II policy documents with optional codebas
 license: MIT
 metadata:
   author: screenata
-  version: "2.2"
+  version: "2.3"
 ---
 
 # SOC 2 Policy Generator
@@ -336,6 +336,8 @@ generated: false
 - Deprovisioning timeline: Same business day
 - Privileged access review: Monthly
 ```
+
+**Update `.compliance/status.md` immediately:** Add or update the policy row in the "Policies" table. Set the Answers column to `.compliance/answers/{policy-id}.md`, leave Policy File empty, and set Status to `answers-saved`.
 
 After writing, tell the user:
 > Answers saved to `.compliance/answers/{policy-id}.md`.

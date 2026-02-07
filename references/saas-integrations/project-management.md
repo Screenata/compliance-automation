@@ -26,7 +26,7 @@ TSC: CC8.1 (Change Management), CC7.1 (Vulnerability Monitoring)
 # .compliance/scripts/jira.sh (excerpt)
 # Requires: JIRA_API_TOKEN, JIRA_EMAIL env vars
 # Config:   jira.config.json { "domain": "https://company.atlassian.net", "project": "ENG" }
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"
@@ -85,7 +85,7 @@ echo "| Change tickets | **${open} open, ${resolved} resolved (30d)** | Jira | \
 #!/usr/bin/env bash
 # .compliance/scripts/github.sh (excerpt)
 # Requires: GH_TOKEN and REPO env vars (auto-set in GitHub Actions)
-set -euo pipefail
+set -uo pipefail
 
 # ... (header/output setup per script-templates.md) ...
 
