@@ -2,7 +2,7 @@
 
 An AI agent skill that generates draft SOC 2 Type I/II policy documents for startups, with codebase scanning, cloud infrastructure scanning, SaaS tool integration, and automated GitHub Actions evidence collection.
 
-[![SOC 2 policies and evidence workflows from a single conversation](https://img.youtube.com/vi/EevpE6bKwhA/maxresdefault.jpg)](https://youtube.com/shorts/EevpE6bKwhA)
+![SOC 2 policies and evidence workflows from a single conversation](https://github.com/user-attachments/assets/c49c4f7f-de8c-4c99-8d34-f0223297955d)
 
 ## What It Does
 
