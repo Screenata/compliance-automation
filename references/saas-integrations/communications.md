@@ -7,9 +7,9 @@ TSC: CC6.1 (Access Control — 2FA), CC7.2-7.3 (Monitoring & Incident Response),
 
 ## Slack
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Workspace settings (2FA) | CC6.1 | `GET /api/team.info` | Bearer token |
 | Channel count (audit trail) | CC7.2 | `GET /api/conversations.list?types=public_channel&limit=1` | Bearer token |
@@ -25,9 +25,9 @@ TSC: CC6.1 (Access Control — 2FA), CC7.2-7.3 (Monitoring & Incident Response),
 
 ## Opsgenie
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Escalation policies | CC7.3 | `GET /v2/escalations` | GenieKey header |
 | On-call schedules | CC7.3 | `GET /v2/schedules` | GenieKey header |
@@ -41,9 +41,9 @@ TSC: CC6.1 (Access Control — 2FA), CC7.2-7.3 (Monitoring & Incident Response),
 
 ## Statuspage
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Components monitored | A1.2 | `GET /v1/pages/{page_id}/components` | OAuth token |
 | Active incidents | A1.2 | `GET /v1/pages/{page_id}/incidents/unresolved` | OAuth token |

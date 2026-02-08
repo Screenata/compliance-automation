@@ -1,15 +1,15 @@
-# SOC 2 Policy Definitions
+# Policy Definitions
 
-This document contains all 17 policy definitions with their TSC mappings and policy-specific questions.
+This document contains all 17 policy definitions with their policy-specific questions, template hints, and evidence requirements. The policy content is framework-agnostic — framework-specific control mappings are in separate files:
+
+- **SOC 2 TSC:** [frameworks/soc2.md](frameworks/soc2.md)
+- **ISO 27001 Annex A:** [frameworks/iso27001.md](frameworks/iso27001.md)
+
+When generating a policy, look up the policy ID in the relevant framework file(s) to get the control codes for the YAML frontmatter.
 
 ## 1. Governance & Board Oversight (GBO)
 
 **ID:** `governance-board-oversight`
-
-**TSC Mappings:**
-- CC1.1: Demonstrates commitment to integrity and ethical values
-- CC1.2: Board exercises oversight responsibility
-- CC1.3: Management establishes structures and reporting lines
 
 **Topics:** Board charter, expertise, meetings, cybersecurity briefings
 
@@ -42,11 +42,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 
 **ID:** `organizational-structure`
 
-**TSC Mappings:**
-- CC1.3: Management establishes structures and reporting lines
-- CC1.4: Demonstrates commitment to attract, develop, retain competent individuals
-- CC1.5: Holds individuals accountable for internal control responsibilities
-
 **Topics:** Roles/responsibilities, org chart, job descriptions
 
 **Questions to Ask:**
@@ -77,10 +72,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 ## 3. Code of Conduct & Ethics (CCE)
 
 **ID:** `code-of-conduct`
-
-**TSC Mappings:**
-- CC1.1: Demonstrates commitment to integrity and ethical values
-- CC1.4: Demonstrates commitment to attract, develop, retain competent individuals
 
 **Topics:** Whistleblower policy, code of conduct, confidentiality agreements
 
@@ -113,11 +104,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 
 **ID:** `information-security-policy`
 
-**TSC Mappings:**
-- CC1.1: Demonstrates commitment to integrity and ethical values
-- CC5.1: Selection and development of control activities
-- CC5.2: Selection and development of general controls over technology
-
 **Topics:** Security policies/procedures, annual review
 
 **Questions to Ask:**
@@ -148,11 +134,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 ## 5. Incident Response (IRP)
 
 **ID:** `incident-response`
-
-**TSC Mappings:**
-- CC7.3: Evaluates security events to determine failures
-- CC7.4: Responds to identified security incidents
-- CC7.5: Identifies and implements activities to recover from incidents
 
 **Topics:** Incident response procedures, testing, logging/tracking
 
@@ -188,10 +169,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 
 **ID:** `external-communications`
 
-**TSC Mappings:**
-- CC2.2: Internally communicates information for internal control
-- CC2.3: Communicates with external parties regarding internal control
-
 **Topics:** Product descriptions, support system, MSA/TOS, customer notifications
 
 **Questions to Ask:**
@@ -222,9 +199,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 ## 7. Vendor Management (VMP)
 
 **ID:** `vendor-management`
-
-**TSC Mappings:**
-- CC9.2: Assesses and manages risks associated with vendors and business partners
 
 **Topics:** Vendor agreements, vendor risk program, third-party security
 
@@ -258,11 +232,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 
 **ID:** `risk-management`
 
-**TSC Mappings:**
-- CC3.1: Specifies objectives to enable identification and assessment of risks
-- CC3.2: Identifies and analyzes risks to objectives
-- CC3.3: Considers potential for fraud in assessing risks
-
 **Topics:** Risk identification, risk assessments, threat rating
 
 **Questions to Ask:**
@@ -293,9 +262,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 ## 9. Change Management (CMP)
 
 **ID:** `change-management`
-
-**TSC Mappings:**
-- CC8.1: Authorizes, designs, develops, configures, documents, tests, approves, and implements changes
 
 **Topics:** Configuration management, SDLC, change authorization
 
@@ -331,11 +297,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 
 **ID:** `access-control`
 
-**TSC Mappings:**
-- CC6.1: Implements logical access security software and architectures
-- CC6.2: Registers and authorizes new users before issuing credentials
-- CC6.3: Authorizes, modifies, or removes access to protected assets
-
 **Topics:** Access provisioning/deprovisioning, privileged access, MFA, access reviews
 
 **Questions to Ask:**
@@ -369,11 +330,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 ## 11. Data Management (DMP)
 
 **ID:** `data-management`
-
-**TSC Mappings:**
-- CC6.5: Discontinues protections only after no longer necessary
-- CC6.6: Implements logical access security against external threats
-- CC6.7: Restricts transmission, movement, and removal of information
 
 **Topics:** Data retention/disposal, backup, data classification, encryption at rest
 
@@ -409,9 +365,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 
 **ID:** `physical-security`
 
-**TSC Mappings:**
-- CC6.4: Restricts physical access to facilities and protected information assets
-
 **Topics:** Data center access, visitor management
 
 **Questions to Ask:**
@@ -442,10 +395,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 ## 13. Vulnerability & Monitoring (VMP)
 
 **ID:** `vulnerability-monitoring`
-
-**TSC Mappings:**
-- CC7.1: Uses detection and monitoring to identify configuration changes
-- CC7.2: Monitors system components for anomalies
 
 **Topics:** Vulnerability scans, penetration testing, log management, IDS, patching, anti-malware
 
@@ -481,10 +430,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 
 **ID:** `network-security`
 
-**TSC Mappings:**
-- CC6.6: Implements logical access security against external threats
-- CC6.7: Restricts transmission, movement, and removal of information
-
 **Topics:** Encryption in transit, firewall rules, network hardening
 
 **Questions to Ask:**
@@ -515,10 +460,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 ## 15. Business Continuity (BCP)
 
 **ID:** `business-continuity`
-
-**TSC Mappings:**
-- A1.2: Authorizes, implements, operates, and monitors environmental protections
-- A1.3: Tests recovery plan procedures supporting system recovery
 
 **Topics:** BC/DR plans, testing, cybersecurity insurance
 
@@ -554,10 +495,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 
 **ID:** `human-resources`
 
-**TSC Mappings:**
-- CC1.4: Demonstrates commitment to attract, develop, retain competent individuals
-- CC1.5: Holds individuals accountable for internal control responsibilities
-
 **Topics:** Performance evaluations, background checks, security training, termination checklists
 
 **Questions to Ask:**
@@ -591,10 +528,6 @@ This document contains all 17 policy definitions with their TSC mappings and pol
 ## 17. Mobile & Endpoint (MEP)
 
 **ID:** `mobile-endpoint`
-
-**TSC Mappings:**
-- CC6.7: Restricts transmission, movement, and removal of information
-- CC6.8: Implements controls to prevent or detect unauthorized or malicious software
 
 **Topics:** MDM, portable media encryption
 

@@ -7,9 +7,9 @@ TSC: CC7.1-7.2 (Vulnerability Monitoring), CC8.1 (Change Management)
 
 ## Snyk
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Monitored projects | CC7.1 | `GET /rest/orgs/{org_id}/projects?version=2024-01-23` | Bearer token |
 | Open vulnerability count | CC7.1 | `GET /rest/orgs/{org_id}/issues?version=2024-01-23&status=open` | Bearer token |
@@ -22,9 +22,9 @@ TSC: CC7.1-7.2 (Vulnerability Monitoring), CC8.1 (Change Management)
 
 ## SonarCloud / SonarQube
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Quality gate status | CC8.1 | `GET /api/qualitygates/project_status?projectKey={key}` | Bearer token |
 | Open vulnerabilities | CC7.1 | `GET /api/issues/search?types=VULNERABILITY&statuses=OPEN` | Bearer token |

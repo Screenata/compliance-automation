@@ -16,7 +16,7 @@ if [ -f "$SECRETS_FILE" ]; then
   set +a
 fi
 
-echo "SOC 2 Evidence Collection — $(date -u '+%Y-%m-%d %H:%M UTC')"
+echo "Compliance Evidence Collection — $(date -u '+%Y-%m-%d %H:%M UTC')"
 echo "================================================"
 
 failed=0

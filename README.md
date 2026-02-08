@@ -1,12 +1,12 @@
-# SOC 2 Policy Generator
+# Compliance Automation
 
-An AI agent skill that generates draft SOC 2 Type I/II policy documents for startups, with codebase scanning, cloud infrastructure scanning, SaaS tool integration, and automated GitHub Actions evidence collection.
+An AI agent skill that generates draft compliance policy documents (SOC 2, ISO 27001) for startups, with codebase scanning, cloud infrastructure scanning, SaaS tool integration, and automated GitHub Actions evidence collection.
 
-![SOC 2 policies and evidence workflows from a single conversation](https://github.com/user-attachments/assets/c49c4f7f-de8c-4c99-8d34-f0223297955d)
+![Compliance policies and evidence workflows from a single conversation](https://github.com/user-attachments/assets/c49c4f7f-de8c-4c99-8d34-f0223297955d)
 
 ## What It Does
 
-- Generates **17 SOC 2 policies** covering all Trust Services Criteria
+- Generates **17 policies** covering SOC 2 Trust Services Criteria and ISO 27001:2022 Annex A controls
 - Tailors policies to your company size, industry, and data types
 - **Scans codebase** for security patterns and extracts concrete values (password lengths, bcrypt rounds, RBAC roles, session timeouts, TLS versions)
 - **Scans cloud infrastructure** (AWS, GCP, Azure) for live configuration evidence
@@ -24,14 +24,14 @@ Works with any agent that supports the [Agent Skills](https://agentskills.io) fo
 
 **Option 1: Install via CLI**
 ```bash
-npx skills add https://github.com/screenata/soc2-policy-generator --skill soc2-policy-generator
+npx skills add https://github.com/screenata/compliance-automation --skill compliance-automation
 ```
 
 **Option 2: Manual install**
 
 Copy the skill to your project's `.claude/skills/` folder.
 
-Then just say: "Generate SOC 2 policies"
+Then just say: "Generate compliance policies" or "Generate SOC 2 policies" or "Generate ISO 27001 policies"
 
 ## Workflow
 
@@ -45,7 +45,7 @@ Then just say: "Generate SOC 2 policies"
 
 ## Policies Included
 
-17 policies covering all Trust Services Criteria: Governance, Organizational Structure, Code of Conduct, Information Security, Incident Response, External Communications, Vendor Management, Risk Management, Change Management, Access Control, Data Management, Physical Security, Vulnerability & Monitoring, Network Security, Business Continuity, Human Resources, and Mobile & Endpoint.
+17 policies covering SOC 2 Trust Services Criteria and ISO 27001:2022 Annex A: Governance, Organizational Structure, Code of Conduct, Information Security, Incident Response, External Communications, Vendor Management, Risk Management, Change Management, Access Control, Data Management, Physical Security, Vulnerability & Monitoring, Network Security, Business Continuity, Human Resources, and Mobile & Endpoint.
 
 ## Codebase Scanning
 
@@ -73,8 +73,8 @@ Scans live AWS, GCP, and Azure environments using CLI tools (read-only commands 
 
 The agent generates API integrations on demand for your SaaS stack — no pre-built connectors needed:
 
-| Category | Tools | SOC 2 Evidence |
-|----------|-------|---------------|
+| Category | Tools | Evidence Collected |
+|----------|-------|-------------------|
 | Identity & Access | Okta, Auth0, Google Workspace, JumpCloud | MFA enrollment rates, password policies, admin roles, deprovisioned users |
 | Monitoring & Alerting | Datadog, PagerDuty, New Relic, Splunk | Active monitors, escalation policies, on-call schedules, incident metrics |
 | Project & Change Mgmt | Jira, Linear, GitHub | Change ticket metrics, branch protection, PR review stats, Dependabot alerts |
@@ -135,10 +135,13 @@ The automated workflows above collect API-based evidence such as configurations 
 ## Structure
 
 ```
-soc2-policy-generator/
+compliance-automation/
 ├── SKILL.md                          # Main skill workflow (Steps 1-7b)
 ├── references/
 │   ├── policies.md                   # 17 policy definitions with questions
+│   ├── frameworks/
+│   │   ├── soc2.md                  # SOC 2 TSC control mappings per policy
+│   │   └── iso27001.md              # ISO 27001 Annex A control mappings per policy
 │   ├── workflow-templates.md         # GitHub Actions generation guidelines
 │   ├── script-templates.md           # Script conventions, config pattern, test workflow
 │   ├── saas-integrations/
@@ -164,8 +167,8 @@ soc2-policy-generator/
 │       └── azure.md                  # Azure CLI scanning patterns
 └── assets/
     ├── policy-template.md            # Output template with evidence formats
-    ├── workflow-soc2-code-scan.yml.template   # Code scan workflow template
-    ├── workflow-soc2-saas-scan.yml.template   # SaaS scan workflow template
+    ├── workflow-compliance-code-scan.yml.template   # Code scan workflow template
+    ├── workflow-compliance-saas-scan.yml.template   # SaaS scan workflow template
     └── scripts/                      # Pre-built evidence collection scripts
         ├── collect-all.sh            # Runner: discovers and executes all scripts
         ├── okta.sh, auth0.sh, ...    # 21 SaaS tool scripts (copy to .compliance/scripts/)

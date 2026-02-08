@@ -7,9 +7,9 @@ TSC: CC8.1 (Change Management), CC7.1 (Vulnerability Monitoring)
 
 ## Jira
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Change management workflow | CC8.1 | `GET /rest/api/3/project/{key}/statuses` | Basic auth (email:token) |
 | Open change requests | CC8.1 | `GET /rest/api/3/search?jql=project={key} AND type=Task AND status!=Done` | Basic auth |
@@ -49,9 +49,9 @@ echo "| Change tickets | **${open} open, ${resolved} resolved (30d)** | Jira | \
 
 ## Linear
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Team workflows | CC8.1 | GraphQL: `{ teams { nodes { name states { nodes { name type } } } } }` | Bearer token |
 | Open issues count | CC8.1 | GraphQL: `{ issues(filter: { state: { type: { in: ["started", "unstarted"] } } }) { totalCount } }` | Bearer token |
@@ -65,9 +65,9 @@ echo "| Change tickets | **${open} open, ${resolved} resolved (30d)** | Jira | \
 
 ## GitHub (Issues & PRs)
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Branch protection rules | CC8.1 | `GET /repos/{owner}/{repo}/branches/{branch}/protection` | Bearer token |
 | Required reviewers | CC8.1 | Branch protection -> `required_pull_request_reviews` | Bearer token |

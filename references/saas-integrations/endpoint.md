@@ -7,9 +7,9 @@ TSC: CC6.5 (Data Management — encryption), CC6.8 (Endpoint Security), CC7.1 (V
 
 ## Jamf Pro
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Managed devices count | CC6.8 | `GET /api/v1/computers-inventory?section=GENERAL&page-size=1` | Bearer token |
 | Compliance policies | CC6.8 | `GET /api/v2/computer-prestages` | Bearer token |
@@ -33,9 +33,9 @@ TOKEN=$(curl -sf -X POST "$JAMF_URL/api/oauth/token" \
 
 ## Kandji
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Device count | CC6.8 | `GET /api/v1/devices` | Bearer token |
 | Blueprint (policy) count | CC6.8 | `GET /api/v1/blueprints` | Bearer token |
@@ -48,9 +48,9 @@ TOKEN=$(curl -sf -X POST "$JAMF_URL/api/oauth/token" \
 
 ## Microsoft Intune
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Managed devices count | CC6.8 | `GET /v1.0/deviceManagement/managedDevices?$count=true` | Bearer token (MS Graph) |
 | Compliance policies | CC6.8 | `GET /v1.0/deviceManagement/deviceCompliancePolicies` | Bearer token |

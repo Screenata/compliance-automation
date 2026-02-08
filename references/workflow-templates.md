@@ -1,6 +1,6 @@
-# GitHub Actions Workflow Templates for SOC 2 Evidence Collection
+# GitHub Actions Workflow Templates for Evidence Collection
 
-Generate GitHub Actions workflows that automate evidence collection for SOC 2 policies. These workflows run the same scanning patterns used during policy generation (Step 2/5) on a recurring schedule.
+Generate GitHub Actions workflows that automate evidence collection for compliance policies. These workflows run the same scanning patterns used during policy generation (Step 2/5) on a recurring schedule.
 
 ## Workflow Types
 
@@ -8,11 +8,11 @@ Generate two workflows:
 
 | Workflow File | Trigger | What It Does |
 |--------------|---------|-------------|
-| `soc2-code-scan.yml` | PR + weekly + manual | Runs Glob/Grep patterns against the codebase, outputs 5-column evidence tables |
-| `soc2-cloud-scan.yml` | Weekly/monthly + manual | Runs cloud CLI commands, outputs 6-column evidence tables |
-| `soc2-saas-scan.yml` | Weekly + manual | Runs SaaS API calls, outputs 5-column evidence tables |
+| `compliance-code-scan.yml` | PR + weekly + manual | Runs Glob/Grep patterns against the codebase, outputs 5-column evidence tables |
+| `compliance-cloud-scan.yml` | Weekly/monthly + manual | Runs cloud CLI commands, outputs 6-column evidence tables |
+| `compliance-saas-scan.yml` | Weekly + manual | Runs SaaS API calls, outputs 5-column evidence tables |
 
-Only generate `soc2-cloud-scan.yml` if the user chose a Cloud option in Step 2. Only generate `soc2-saas-scan.yml` if the user configured SaaS tools in Step 1 (Q13) and chose a SaaS option in Step 2.
+Only generate `compliance-cloud-scan.yml` if the user chose a Cloud option in Step 2. Only generate `compliance-saas-scan.yml` if the user configured SaaS tools in Step 1 (Q13) and chose a SaaS option in Step 2.
 
 ## Schedule Mapping
 
@@ -79,7 +79,7 @@ Each file starts with a metadata header, then evidence tables matching the polic
 
 > Scan date: {YYYY-MM-DD HH:MM UTC}
 > Git SHA: {short sha}
-> Workflow: soc2-code-scan.yml
+> Workflow: compliance-code-scan.yml
 
 | Control | Extracted Value | File | Line | Raw Evidence |
 |---------|----------------|------|------|-------------|
@@ -92,7 +92,7 @@ Each file starts with a metadata header, then evidence tables matching the polic
 
 > Scan date: {YYYY-MM-DD HH:MM UTC}
 > Region: {scanned region(s)}
-> Workflow: soc2-cloud-scan.yml
+> Workflow: compliance-cloud-scan.yml
 
 | Control | Extracted Value | Service | Region | Command | Raw Evidence |
 |---------|----------------|---------|--------|---------|-------------|
@@ -140,7 +140,7 @@ Generated when both code and cloud evidence exist:
 Auto-generated index:
 
 ```markdown
-# SOC 2 Evidence Collection
+# Compliance Evidence Collection
 
 Automated evidence collected by GitHub Actions workflows.
 
@@ -148,9 +148,9 @@ Automated evidence collected by GitHub Actions workflows.
 
 | Evidence File | Last Updated | Workflow |
 |--------------|-------------|----------|
-| [Access Control (Code)](code/access-control-evidence.md) | 2024-01-15 | soc2-code-scan |
-| [AWS Cloud](cloud/aws-evidence.md) | 2024-01-15 | soc2-cloud-scan |
-| [Drift Report](drift/drift-report.md) | 2024-01-15 | soc2-cloud-scan |
+| [Access Control (Code)](code/access-control-evidence.md) | 2024-01-15 | compliance-code-scan |
+| [AWS Cloud](cloud/aws-evidence.md) | 2024-01-15 | compliance-cloud-scan |
+| [Drift Report](drift/drift-report.md) | 2024-01-15 | compliance-cloud-scan |
 
 ## Workflows
 
@@ -160,9 +160,9 @@ Automated evidence collected by GitHub Actions workflows.
 
 ---
 
-## Code Scan Workflow Template (`soc2-code-scan.yml`)
+## Code Scan Workflow Template (`compliance-code-scan.yml`)
 
-Use the YAML template at [assets/workflow-soc2-code-scan.yml.template](../assets/workflow-soc2-code-scan.yml.template) as the base structure.
+Use the YAML template at [assets/workflow-compliance-code-scan.yml.template](../assets/workflow-compliance-code-scan.yml.template) as the base structure.
 
 **Customization rules:**
 - The agent generates a `.compliance/scripts/code-scan.sh` script with the relevant grep/glob patterns
@@ -182,12 +182,12 @@ The script itself contains the grep/find patterns. See [script-templates.md](scr
 
 ---
 
-## Cloud Scan Workflow Template (`soc2-cloud-scan.yml`)
+## Cloud Scan Workflow Template (`compliance-cloud-scan.yml`)
 
 Generate this workflow based on the cloud providers available. Structure:
 
 ```yaml
-name: SOC 2 Cloud Evidence Collection
+name: Compliance Cloud Evidence Collection
 on:
   schedule:
     - cron: '0 0 * * 1'  # Weekly Monday
@@ -236,7 +236,7 @@ aws-scan:
 
         > Scan date: $(date -u '+%Y-%m-%d %H:%M UTC')
         > Region: ${{ env.AWS_REGION }}
-        > Workflow: soc2-cloud-scan.yml
+        > Workflow: compliance-cloud-scan.yml
         HEADER
 
     - name: Scan IAM Password Policy
@@ -255,7 +255,7 @@ aws-scan:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add .compliance/evidence/
-        git diff --staged --quiet || git commit -m "chore: update SOC 2 cloud evidence [skip ci]"
+        git diff --staged --quiet || git commit -m "chore: update compliance cloud evidence [skip ci]"
         git push
 ```
 
@@ -360,13 +360,13 @@ Recommend: Use **GitHub OIDC** with `aws-actions/configure-aws-credentials@v4` a
 
 ---
 
-## SaaS Scan Workflow Template (`soc2-saas-scan.yml`)
+## SaaS Scan Workflow Template (`compliance-saas-scan.yml`)
 
-Generate this workflow when the user configured SaaS tools in Step 1 (Q13). Use the YAML template at [assets/workflow-soc2-saas-scan.yml.template](../assets/workflow-soc2-saas-scan.yml.template) as the base structure.
+Generate this workflow when the user configured SaaS tools in Step 1 (Q13). Use the YAML template at [assets/workflow-compliance-saas-scan.yml.template](../assets/workflow-compliance-saas-scan.yml.template) as the base structure.
 
 **Structure:**
 ```yaml
-name: SOC 2 SaaS Evidence Collection
+name: Compliance SaaS Evidence Collection
 on:
   schedule:
     - cron: '0 0 * * 1'  # Weekly Monday
@@ -420,7 +420,7 @@ See [references/saas-integrations/shared.md](saas-integrations/shared.md) for th
 
 When the user generates multiple policies across sessions:
 
-1. **Check if workflows already exist**: Read `.github/workflows/soc2-code-scan.yml`, `soc2-cloud-scan.yml`, and `soc2-saas-scan.yml`
+1. **Check if workflows already exist**: Read `.github/workflows/compliance-code-scan.yml`, `compliance-cloud-scan.yml`, and `compliance-saas-scan.yml`
 2. **If they exist**: Add new policy/tool steps to the existing workflow rather than overwriting
 3. **If they don't exist**: Create new workflow files from the templates
 4. **Deduplication**: If a policy's or tool's steps are already present, skip adding them again

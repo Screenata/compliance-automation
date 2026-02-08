@@ -7,9 +7,9 @@ TSC: CC7.1-7.2 (Vulnerability Monitoring), CC7.3-7.5 (Incident Response), A1.2 (
 
 ## Datadog
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Active monitors count | CC7.1 | `GET /api/v1/monitor` | API key + App key |
 | Monitor status summary | CC7.1 | `GET /api/v1/monitor/search?query=status:alert` | API key + App key |
@@ -54,9 +54,9 @@ echo "| Active monitors | **${total} total, ${alerting:-0} alerting** | Datadog 
 
 ## PagerDuty
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Active incidents | CC7.3 | `GET /incidents?statuses[]=triggered&statuses[]=acknowledged` | Bearer token |
 | Escalation policies | CC7.3 | `GET /escalation_policies` | Bearer token |
@@ -72,9 +72,9 @@ echo "| Active monitors | **${total} total, ${alerting:-0} alerting** | Datadog 
 
 ## New Relic
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Alert policies | CC7.1 | NerdGraph: `{ actor { account(id: {id}) { alerts { policiesSearch { policies { name } } } } } }` | API key |
 | Alert conditions count | CC7.1 | NerdGraph query | API key |
@@ -87,9 +87,9 @@ echo "| Active monitors | **${total} total, ${alerting:-0} alerting** | Datadog 
 
 ## Splunk Cloud
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Saved searches (alerts) | CC7.1 | `GET /services/saved/searches?count=0` | Bearer token |
 | Indexes | CC7.2 | `GET /services/data/indexes` | Bearer token |

@@ -7,9 +7,9 @@ TSC: CC6.1-6.3 (Access Control)
 
 ## Okta
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | MFA enrollment rate | CC6.1 | `GET /api/v1/users?filter=status eq "ACTIVE"` then check factors | Bearer token |
 | Password policy settings | CC6.1 | `GET /api/v1/policies?type=PASSWORD` | Bearer token |
@@ -58,9 +58,9 @@ echo "| MFA enrollment | **${mfa_count}/${sampled} sampled (${pct}%)** | Okta | 
 
 ## Auth0
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | MFA policy status | CC6.1 | `GET /api/v2/guardian/factors` | Bearer token (Management API) |
 | Connection settings | CC6.1 | `GET /api/v2/connections` | Bearer token |
@@ -88,9 +88,9 @@ TOKEN=$(curl -sf --request POST \
 
 ## Google Workspace (Admin SDK)
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | 2FA enrollment status | CC6.1 | `GET /admin/reports/v1/usage/users` | OAuth2 service account |
 | User count & status | CC6.1 | `GET /admin/directory/v1/users?domain={domain}&maxResults=1` | OAuth2 |
@@ -105,9 +105,9 @@ TOKEN=$(curl -sf --request POST \
 
 ## JumpCloud
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | MFA status | CC6.1 | `GET /api/v2/users` (check `mfa.configured`) | x-api-key header |
 | System users count | CC6.1 | `GET /api/systemusers` | x-api-key header |

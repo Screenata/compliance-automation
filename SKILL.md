@@ -1,15 +1,15 @@
 ---
-name: soc2-policy-generator
-description: Generate draft SOC 2 Type II policy documents with optional codebase, cloud infrastructure, and SaaS tool scanning for evidence, plus automated GitHub Actions workflows for recurring evidence collection. Use when the user needs to create compliance policies, security policies, or mentions SOC 2 certification.
+name: compliance-automation
+description: Generate draft compliance policy documents (SOC 2, ISO 27001) with optional codebase, cloud infrastructure, and SaaS tool scanning for evidence, plus automated GitHub Actions workflows for recurring evidence collection. Use when the user needs to create compliance policies, security policies, or mentions SOC 2, ISO 27001, or audit preparation.
 license: MIT
 metadata:
   author: screenata
   version: "2.5"
 ---
 
-# SOC 2 Policy Generator
+# Compliance Automation
 
-Generate draft SOC 2 Type II policy documents based on company context, answers to targeted questions, and optionally detected codebase evidence.
+Generate draft compliance policy documents based on company context, answers to targeted questions, and optionally detected codebase evidence.
 
 ## Important Disclaimer
 
@@ -18,8 +18,8 @@ Generate draft SOC 2 Type II policy documents based on company context, answers 
 ## When to Use This Skill
 
 Use this skill when the user:
-- Needs to create SOC 2 compliance policies
-- Mentions SOC 2 certification or audit preparation
+- Needs to create compliance policies (SOC 2, ISO 27001, or both)
+- Mentions SOC 2 certification, ISO 27001 certification, or audit preparation
 - Asks for security policy templates
 - Wants to generate compliance documentation
 
@@ -34,7 +34,7 @@ Use this skill when the user:
 **First, check for existing session state:**
 
 Before asking any questions, check if `.compliance/config.json` exists. If it does:
-1. Read `.compliance/config.json` to recover previously saved answers (org name, description, industry, size, executives, work model, devices, identity provider, data types, data location, hosting, cert type, SaaS tools, report signoff, evidence method)
+1. Read `.compliance/config.json` to recover previously saved answers (org name, description, industry, size, executives, work model, devices, identity provider, data types, data location, hosting, frameworks, cert type, SaaS tools, report signoff, evidence method)
 2. Read `.compliance/status.md` to recover progress on policies, SaaS tools, cloud providers, and workflows
 3. Present a summary to the user:
    > I found your previous session state. Here's what I have:
@@ -43,7 +43,8 @@ Before asking any questions, check if `.compliance/config.json` exists. If it do
    > - **Infrastructure:** Hosted on [hosting_providers], data in [data_locations]
    > - **Identity:** [identity_provider], devices: [device_types]
    > - **Data types:** [data_types]
-   > - **Cert:** [cert_type]
+   > - **Frameworks:** [frameworks]
+   > - **Cert:** [cert_type] (SOC 2 only)
    > - **Evidence method:** [evidence_method]
    > - **SaaS tools:** [saas_tools list]
    > - **Policies generated:** [count] of 17 ([names])
@@ -61,7 +62,7 @@ Ask each question separately. After receiving an answer, proceed to the next que
 
 **Update `.compliance/config.json` after every answer.** Create the `.compliance/` directory and `.compliance/config.json` after Q1 is answered. When creating the `.compliance/` directory, also ensure `.compliance/secrets.env` is in `.gitignore` (append it if not already present — this file will hold API tokens for local testing and must never be committed). Use the JSON format shown at the end of Step 1, with empty/null values for unanswered questions. After each subsequent question, update the corresponding field immediately. This ensures progress is saved even if the session ends between questions.
 
-Field mapping: Q1 → `org_name`, Q2 → `company_description`, Q3 → `industry`, Q4 → `company_size`, Q5 → `executives`, Q6 → `work_model`, Q7 → `device_types`, Q8 → `identity_provider`, Q9 → `data_types`, Q10 → `data_locations`, Q11 → `hosting_providers`, Q12 → `cert_type`, Q13 → `saas_tools`, Q14 → `report_signoff`.
+Field mapping: Q1 → `org_name`, Q2 → `company_description`, Q3 → `industry`, Q4 → `company_size`, Q5 → `executives`, Q6 → `work_model`, Q7 → `device_types`, Q8 → `identity_provider`, Q9 → `data_types`, Q10 → `data_locations`, Q11 → `hosting_providers`, Q12 → `frameworks`, Q12a → `cert_type` (SOC 2 only), Q13 → `saas_tools`, Q14 → `report_signoff`.
 
 **Question 1** (ask first, wait for response):
 > What is your organization's name?
@@ -160,11 +161,17 @@ Before asking this question, auto-detect hosting providers from the codebase. Sc
 > 6. Other (please specify)
 
 **Question 12** (ask after Q11 answered):
+> Which compliance framework(s) are you targeting? (select all that apply)
+> 1. SOC 2
+> 2. ISO 27001
+> 3. Both SOC 2 and ISO 27001
+
+**Question 12a** (ask only if SOC 2 was selected in Q12):
 > Are you pursuing SOC 2 Type I or Type II?
 > 1. Type I (point-in-time)
 > 2. Type II (operational over time)
 
-**Question 13** (ask after Q12 answered):
+**Question 13** (ask after Q12/Q12a answered):
 
 Before asking this question, run the SaaS auto-detection scan per [references/scanning-patterns/saas-detection.md](references/scanning-patterns/saas-detection.md). This scans `.env.example` files, package managers, Terraform providers, GitHub Actions workflows, and tool-specific config files to detect which SaaS tools are already in use.
 
@@ -213,6 +220,7 @@ All answers apply to all policies generated in this session. By this point, `.co
   "data_types": ["Customer PII"],
   "data_locations": ["North America"],
   "hosting_providers": ["AWS", "Vercel"],
+  "frameworks": ["SOC 2", "ISO 27001"],
   "cert_type": "Type II",
   "saas_tools": ["okta", "datadog", "jira"],
   "report_signoff": {
@@ -229,7 +237,7 @@ All answers apply to all policies generated in this session. By this point, `.co
 Also create `.compliance/status.md` with empty progress tables (filled in later steps):
 
 ```markdown
-# SOC 2 Policy Generator — Progress
+# Compliance Automation — Progress
 
 ## Policies
 
@@ -279,7 +287,12 @@ Skip scanning entirely.
 
 ### Step 3: Select Policy
 
-Show the numbered list of 17 policies and ask which to generate:
+Show the numbered list of 17 policies and ask which to generate. The same 17 policies apply to both SOC 2 and ISO 27001 — the policy content is the same, only the control mappings in the YAML frontmatter differ. When generating a policy, look up the policy ID in the relevant framework file(s) to get control codes:
+
+- **SOC 2:** [references/frameworks/soc2.md](references/frameworks/soc2.md)
+- **ISO 27001:** [references/frameworks/iso27001.md](references/frameworks/iso27001.md)
+
+Include only the control mappings for the framework(s) selected in Q12 (TSC for SOC 2, Annex A for ISO 27001, or both).
 
 > Which policy would you like to generate?
 > 1. Governance & Board Oversight
@@ -469,9 +482,9 @@ Workflows are thin wrappers — they just:
 4. Commit evidence files
 
 Generate:
-- `.github/workflows/soc2-code-scan.yml` — runs `code-scan.sh` weekly + on PRs
-- `.github/workflows/soc2-cloud-scan.yml` — runs `{provider}.sh` weekly/monthly (only if Cloud was chosen)
-- `.github/workflows/soc2-saas-scan.yml` — runs `{tool}.sh` weekly (only if SaaS was chosen)
+- `.github/workflows/compliance-code-scan.yml` — runs `code-scan.sh` weekly + on PRs
+- `.github/workflows/compliance-cloud-scan.yml` — runs `{provider}.sh` weekly/monthly (only if Cloud was chosen)
+- `.github/workflows/compliance-saas-scan.yml` — runs `{tool}.sh` weekly (only if SaaS was chosen)
 
 Evidence files are saved to `.compliance/evidence/` with code, cloud, and saas subdirectories.
 
@@ -490,13 +503,13 @@ After generating, output:
 
 Scanning patterns are organized per policy in `references/scanning-patterns/`. Load only the file for the policy being generated.
 
-| Policy | Scanning File | TSC |
-|--------|--------------|-----|
-| Access Control | [access-control.md](references/scanning-patterns/access-control.md) | CC6.1-6.3 |
-| Data Management | [data-management.md](references/scanning-patterns/data-management.md) | CC6.5-6.7 |
-| Network Security | [network-security.md](references/scanning-patterns/network-security.md) | CC6.6-6.7 |
-| Change Management | [change-management.md](references/scanning-patterns/change-management.md) | CC8.1 |
-| Vulnerability & Monitoring | [vulnerability-monitoring.md](references/scanning-patterns/vulnerability-monitoring.md) | CC7.1-7.2 |
+| Policy | Scanning File | SOC 2 TSC | ISO 27001 Annex A |
+|--------|--------------|-----------|-------------------|
+| Access Control | [access-control.md](references/scanning-patterns/access-control.md) | CC6.1-6.3 | A.5.15-5.18, A.8.2-8.3, A.8.5 |
+| Data Management | [data-management.md](references/scanning-patterns/data-management.md) | CC6.5-6.7 | A.5.9-5.13, A.8.10-8.12 |
+| Network Security | [network-security.md](references/scanning-patterns/network-security.md) | CC6.6-6.7, CC7.1 | A.8.20-8.22, A.8.24 |
+| Change Management | [change-management.md](references/scanning-patterns/change-management.md) | CC8.1 | A.8.9, A.8.25, A.8.32 |
+| Vulnerability & Monitoring | [vulnerability-monitoring.md](references/scanning-patterns/vulnerability-monitoring.md) | CC7.1-7.2 | A.5.7, A.8.8, A.8.16 |
 
 | SaaS Tool Detection | [saas-detection.md](references/scanning-patterns/saas-detection.md) | Step 1 Q13 |
 
@@ -522,13 +535,13 @@ SaaS integration patterns are organized per category in `references/saas-integra
 
 | Category | File | Tools | Policies Covered |
 |----------|------|-------|-----------------|
-| Identity & Access | [identity.md](references/saas-integrations/identity.md) | Okta, Auth0, Google Workspace, JumpCloud | Access Control (CC6.1-6.3) |
-| Monitoring & Alerting | [monitoring.md](references/saas-integrations/monitoring.md) | Datadog, PagerDuty, New Relic, Splunk | Vulnerability Monitoring (CC7.1-7.2), Incident Response (CC7.3-7.5) |
-| Project & Change Mgmt | [project-management.md](references/saas-integrations/project-management.md) | Jira, Linear, GitHub | Change Management (CC8.1) |
-| Communications | [communications.md](references/saas-integrations/communications.md) | Slack, Opsgenie, Statuspage | Incident Response (CC7.3), Business Continuity (A1.2) |
-| HR & People | [hr.md](references/saas-integrations/hr.md) | BambooHR, Gusto, Rippling | Personnel (CC1.4) |
-| Endpoint Management | [endpoint.md](references/saas-integrations/endpoint.md) | Jamf, Kandji, Intune | Endpoint Security (CC6.8) |
-| Security Scanning | [security.md](references/saas-integrations/security.md) | Snyk, SonarCloud | Vulnerability Monitoring (CC7.1-7.2) |
+| Identity & Access | [identity.md](references/saas-integrations/identity.md) | Okta, Auth0, Google Workspace, JumpCloud | Access Control |
+| Monitoring & Alerting | [monitoring.md](references/saas-integrations/monitoring.md) | Datadog, PagerDuty, New Relic, Splunk | Vulnerability Monitoring, Incident Response |
+| Project & Change Mgmt | [project-management.md](references/saas-integrations/project-management.md) | Jira, Linear, GitHub | Change Management |
+| Communications | [communications.md](references/saas-integrations/communications.md) | Slack, Opsgenie, Statuspage | Incident Response, Business Continuity |
+| HR & People | [hr.md](references/saas-integrations/hr.md) | BambooHR, Gusto, Rippling | Human Resources |
+| Endpoint Management | [endpoint.md](references/saas-integrations/endpoint.md) | Jamf, Kandji, Intune | Mobile & Endpoint |
+| Security Scanning | [security.md](references/saas-integrations/security.md) | Snyk, SonarCloud | Vulnerability Monitoring |
 
 Shared guidelines (evidence format, script pattern, secrets, handling unknown tools): [shared.md](references/saas-integrations/shared.md)
 
@@ -544,8 +557,8 @@ Script templates, per-tool config convention, collect-all.sh runner, and test-fi
 
 Workflow templates, schedule mapping, output formats, and secrets setup: [references/workflow-templates.md](references/workflow-templates.md)
 
-Code scan YAML template: [assets/workflow-soc2-code-scan.yml.template](assets/workflow-soc2-code-scan.yml.template)
-SaaS scan YAML template: [assets/workflow-soc2-saas-scan.yml.template](assets/workflow-soc2-saas-scan.yml.template)
+Code scan YAML template: [assets/workflow-compliance-code-scan.yml.template](assets/workflow-compliance-code-scan.yml.template)
+SaaS scan YAML template: [assets/workflow-compliance-saas-scan.yml.template](assets/workflow-compliance-saas-scan.yml.template)
 
 ---
 
@@ -579,7 +592,7 @@ Every policy MUST end with:
 Auditors may require stronger language + evidence of operation.
 
 ---
-Generated with [SOC 2 Policy Generator](https://github.com/screenata/soc2-policy-generator)
+Generated with [Compliance Automation](https://github.com/screenata/compliance-automation)
 ```
 
 ## Evidence Types

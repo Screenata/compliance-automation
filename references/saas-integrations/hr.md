@@ -9,9 +9,9 @@ TSC: CC1.4 (Personnel), CC6.2 (Access Revocation), CC6.8 (Endpoint Security)
 
 ## BambooHR
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Employee count | CC1.4 | `GET /api/gateway.php/{subdomain}/v1/employees/directory` | Basic auth |
 | Recent terminations | CC6.2 | `GET /api/gateway.php/{subdomain}/v1/employees/directory` (filter by status) | Basic auth |
@@ -24,9 +24,9 @@ TSC: CC1.4 (Personnel), CC6.2 (Access Revocation), CC6.8 (Endpoint Security)
 
 ## Gusto
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Company employees count | CC1.4 | `GET /v1/companies/{company_id}/employees` | Bearer token (OAuth2) |
 | Active benefits | CC1.4 | `GET /v1/companies/{company_id}/benefits` | Bearer token |
@@ -37,9 +37,9 @@ TSC: CC1.4 (Personnel), CC6.2 (Access Revocation), CC6.8 (Endpoint Security)
 
 ## Rippling
 
-**SOC 2 evidence provided:**
+**Compliance evidence provided:**
 
-| Evidence | TSC | API Endpoint | Method |
+| Evidence | Controls | API Endpoint | Method |
 |----------|-----|-------------|--------|
 | Employee count | CC1.4 | `GET /platform/api/employees` | Bearer token |
 | Active policies | CC1.4 | `GET /platform/api/policies` | Bearer token |

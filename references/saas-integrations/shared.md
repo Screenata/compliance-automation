@@ -1,13 +1,13 @@
 # SaaS Integration — Shared Guidelines
 
-The agent generates custom API integrations on demand based on the user's SaaS stack. These reference files map common tools to the SOC 2 evidence they provide, with API patterns and auth methods.
+The agent generates custom API integrations on demand based on the user's SaaS stack. These reference files map common tools to the compliance evidence they provide, with API patterns and auth methods.
 
-**Key principle:** Unlike pre-built connectors, the agent knows these APIs and generates the exact integration needed. These files provide the SOC 2 mapping and structural patterns — the agent fills in the API details.
+**Key principle:** Unlike pre-built connectors, the agent knows these APIs and generates the exact integration needed. These files provide the control mapping and structural patterns — the agent fills in the API details.
 
 ## How SaaS Evidence Collection Works
 
 1. User declares their SaaS tools in Step 1 (Q13)
-2. During policy generation, the agent maps tools to relevant SOC 2 controls
+2. During policy generation, the agent maps tools to relevant compliance controls
 3. During evidence script generation (Step 7a), the agent copies pre-built scripts from `assets/scripts/` when available, or generates new scripts on demand as a fallback
 4. The agent asks for config values and tests each script locally before wiring it into a workflow
 5. During workflow generation (Step 7b), the agent generates GitHub Actions that call the tested scripts
@@ -55,7 +55,7 @@ Every SaaS tool gets a standalone script (`.compliance/scripts/{tool}.sh`) + con
 ```bash
 #!/usr/bin/env bash
 # .compliance/scripts/{tool}.sh
-# SOC 2 evidence collection for {Tool Name}
+# Compliance evidence collection for {Tool Name}
 # Requires: {TOOL}_API_TOKEN env var
 # Config:   {tool}.config.json (co-located)
 set -uo pipefail
@@ -64,7 +64,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="${SCRIPT_DIR}/$(basename "$0" .sh).config.json"
 DOMAIN=$(jq -r '.domain // empty' "$CONFIG")
 
-OUT="${SOC2_EVIDENCE_DIR:-.compliance/evidence/saas}/$(basename "$0" .sh)-evidence.md"
+OUT="${COMPLIANCE_EVIDENCE_DIR:-.compliance/evidence/saas}/$(basename "$0" .sh)-evidence.md"
 mkdir -p "$(dirname "$OUT")"
 
 {
@@ -138,7 +138,7 @@ If the user names a SaaS tool not in the catalog:
 2. **If the API is unknown**, ask the user:
    > I'm not familiar with {tool}'s API. Could you provide:
    > - The API documentation URL
-   > - What SOC 2 evidence you'd like to extract from it
+   > - What compliance evidence you'd like to extract from it
    >
    > I'll generate the integration from the docs.
 3. **If the user provides docs**, use WebFetch to read the API documentation and generate the integration.
@@ -150,12 +150,12 @@ Quick reference for which tools provide evidence for which policies:
 
 | Policy | Relevant SaaS Tools |
 |--------|-------------------|
-| Access Control (CC6.1-6.3) | Okta, Auth0, Google Workspace, JumpCloud, Slack (2FA), GitHub (branch protection) |
-| Data Management (CC6.5-6.7) | Jamf/Kandji (FileVault), Snyk (dependency scanning) |
-| Network Security (CC6.6-6.7) | Datadog (network monitors), Snyk |
-| Change Management (CC8.1) | Jira, Linear, GitHub (PRs/reviews), SonarCloud |
-| Vulnerability Monitoring (CC7.1-7.2) | Snyk, SonarCloud, GitHub (Dependabot/CodeQL), Datadog (SIEM) |
-| Incident Response (CC7.3-7.5) | PagerDuty, Opsgenie, Slack (incident channels), Statuspage |
-| Business Continuity (A1.2-A1.3) | Datadog (SLOs), Statuspage (uptime), PagerDuty (on-call) |
-| HR & Personnel (CC1.4) | BambooHR, Gusto, Rippling |
-| Endpoint Security (CC6.8) | Jamf, Kandji, Intune, Rippling |
+| Access Control | Okta, Auth0, Google Workspace, JumpCloud, Slack (2FA), GitHub (branch protection) |
+| Data Management | Jamf/Kandji (FileVault), Snyk (dependency scanning) |
+| Network Security | Datadog (network monitors), Snyk |
+| Change Management | Jira, Linear, GitHub (PRs/reviews), SonarCloud |
+| Vulnerability Monitoring | Snyk, SonarCloud, GitHub (Dependabot/CodeQL), Datadog (SIEM) |
+| Incident Response | PagerDuty, Opsgenie, Slack (incident channels), Statuspage |
+| Business Continuity | Datadog (SLOs), Statuspage (uptime), PagerDuty (on-call) |
+| Human Resources | BambooHR, Gusto, Rippling |
+| Mobile & Endpoint | Jamf, Kandji, Intune, Rippling |
