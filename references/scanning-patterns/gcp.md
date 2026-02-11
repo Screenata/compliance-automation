@@ -1,6 +1,7 @@
 # GCP Cloud Scanning Patterns
 
 For cloud scanning of Google Cloud infrastructure.
+**Pre-built script:** `assets/scripts/gcp.sh` — copy to `.compliance/scripts/` and configure with `gcp.config.json`.
 See [cloud-shared.md](cloud-shared.md) for authentication, safety rules, and evidence formatting.
 
 ## Prerequisites

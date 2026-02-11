@@ -1,6 +1,7 @@
 # Azure Cloud Scanning Patterns
 
 For cloud scanning of Azure infrastructure.
+**Pre-built script:** `assets/scripts/azure.sh` — copy to `.compliance/scripts/` and configure with `azure.config.json`.
 See [cloud-shared.md](cloud-shared.md) for authentication, safety rules, and evidence formatting.
 
 ## Prerequisites

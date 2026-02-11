@@ -1,6 +1,6 @@
 # Evidence Collection Scripts — Templates & Conventions
 
-Pre-built scripts for 21 common SaaS tools ship in `assets/scripts/`. The agent copies them to `.compliance/scripts/`, adds a config file, and tests. If a pre-built script doesn't work (API changed, version mismatch), the agent falls back to generating a new script on demand.
+Pre-built scripts for 26 common tools (23 SaaS + 3 cloud providers) ship in `assets/scripts/`. The agent copies them to `.compliance/scripts/`, adds a config file, and tests. If a pre-built script doesn't work (API changed, version mismatch), the agent falls back to generating a new script on demand.
 
 ## Directory Structure
 
@@ -177,8 +177,13 @@ echo "Collection complete. ${failed} failure(s)."
 | Endpoint | Intune | `intune.sh` | `{}` | `INTUNE_CLIENT_ID`, `INTUNE_CLIENT_SECRET`, `INTUNE_TENANT_ID` (token acquired via OAuth2) |
 | Security | Snyk | `snyk.sh` | `{ "org_id": "abc-123" }` | `SNYK_TOKEN` |
 | Security | SonarCloud | `sonarcloud.sh` | `{ "project_key": "org_project", "base_url": "https://sonarcloud.io" }` | `SONAR_TOKEN` |
+| SaaS | Cloudflare | `cloudflare.sh` | `{ "account_id": "abc123" }` | `CLOUDFLARE_API_TOKEN` |
+| SaaS | Vercel | `vercel.sh` | `{ "team_id": "team_abc123" }` | `VERCEL_TOKEN` |
+| Cloud | AWS | `aws.sh` | `{ "region": "us-east-1" }` | AWS credentials (env vars or CLI profile) |
+| Cloud | GCP | `gcp.sh` | `{ "project": "my-project", "region": "us-central1" }` | `gcloud auth` (CLI or service account) |
+| Cloud | Azure | `azure.sh` | `{ "subscription": "sub-id" }` | `az login` (CLI or service principal) |
 
-Plus `collect-all.sh` — the runner that discovers and executes all scripts in the directory.
+Plus `collect-all.sh` — the runner that discovers and executes all scripts in the directory. Cloud scripts include a CLI presence check (`command -v aws/gcloud/az`) and exit 0 with a skip message if the CLI is not installed, so `collect-all.sh` won't report failures for unconfigured providers.
 
 ---
 

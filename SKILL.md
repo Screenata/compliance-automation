@@ -186,16 +186,32 @@ Before asking this question, run the SaaS auto-detection scan per [references/sc
 > (Or type "skip" for no SaaS integrations)
 
 **If nothing is detected**, fall back to the manual question:
-> What SaaS tools does your team use? (select all that apply, or skip)
-> 1. Identity: Okta, Auth0, Google Workspace, JumpCloud
-> 2. Monitoring: Datadog, PagerDuty, New Relic, Splunk
-> 3. Project management: Jira, Linear, GitHub Issues
-> 4. HR: BambooHR, Gusto, Rippling
-> 5. Endpoint: Jamf, Kandji, Intune
-> 6. Other (please list)
-> 7. Skip — no SaaS integrations
+> What SaaS tools does your team use? (select all that apply, or type additional tools not listed)
+> 1. Okta
+> 2. Auth0
+> 3. Google Workspace
+> 4. JumpCloud
+> 5. Datadog
+> 6. PagerDuty
+> 7. New Relic
+> 8. Splunk
+> 9. Jira
+> 10. Linear
+> 11. GitHub
+> 12. Slack
+> 13. Opsgenie
+> 14. Statuspage
+> 15. BambooHR
+> 16. Gusto
+> 17. Rippling
+> 18. Jamf
+> 19. Kandji
+> 20. Intune
+> 21. Snyk
+> 22. SonarCloud
+> 23. Skip — no SaaS integrations
 
-For each category selected (or confirmed), ask which specific tool(s) if not already clear. Save the tool list — it's used in policy generation (Step 5) and workflow generation (Step 7).
+The user can select multiple numbers (e.g. "1, 5, 9, 11") and/or type additional tool names not in the list. Save the tool list — it's used in policy generation (Step 5) and workflow generation (Step 7).
 
 **Question 14** (ask after Q13 answered):
 > Who will sign off on the final report? (full name, title, and email)
@@ -437,7 +453,7 @@ If any tools have partial or complete progress, present a status summary:
 **Skip any tool that already has all checkmarks** (Script + Config + Tested). For partially completed tools, resume from the next incomplete step — don't re-ask for config values that already exist in `{tool}.config.json` or tokens already in `secrets.env`.
 For each tool/provider selected, set up an evidence collection script + config pair. Follow [references/script-templates.md](references/script-templates.md) for conventions.
 
-Pre-built scripts for 21 common tools are available in `assets/scripts/`. Use the **copy-first** approach — fall back to generating on demand only when needed.
+Pre-built scripts for 26 common tools (23 SaaS + 3 cloud providers) are available in `assets/scripts/`. Use the **copy-first** approach — fall back to generating on demand only when needed.
 
 **For each SaaS tool** (skip steps that are already complete):
 1. **If `.compliance/scripts/{tool}.sh` already exists**, skip to step 4. Otherwise: **if pre-built script exists** in `assets/scripts/{tool}.sh`, copy it to `.compliance/scripts/{tool}.sh`. **If no pre-built script**, generate one using API patterns from `references/saas-integrations/{category}.md`.
@@ -454,7 +470,7 @@ Pre-built scripts for 21 common tools are available in `assets/scripts/`. Use th
 Do the same for cloud providers in the "Cloud Provider Configuration" table.
 
 **For cloud providers** (skip steps that are already complete):
-1. **If `.compliance/scripts/{provider}.sh` already exists**, skip to step 4. Otherwise: generate using CLI patterns from `references/scanning-patterns/{provider}.md`.
+1. **If `.compliance/scripts/{provider}.sh` already exists**, skip to step 4. Otherwise: **if pre-built script exists** in `assets/scripts/{provider}.sh`, copy it to `.compliance/scripts/{provider}.sh`. **If no pre-built script**, generate using CLI patterns from `references/scanning-patterns/{provider}.md`.
 2. **If `.compliance/scripts/{provider}.config.json` already exists**, skip to step 4. Otherwise: write config with region and other settings.
 3. **Update `.compliance/status.md`** — mark `[x] Script` and `[x] Config` for this provider in the "Cloud Provider Configuration" table.
 4. Verify cloud CLI is authenticated (`aws sts get-caller-identity`, `gcloud auth list`, etc.)
@@ -488,7 +504,7 @@ Generate:
 
 Evidence files are saved to `.compliance/evidence/` with code, cloud, and saas subdirectories.
 
-**If workflows already exist** from a previous policy, update them to include new script calls rather than creating duplicate workflow files.
+**If workflows already exist** from a previous policy, update them to include new script calls rather than creating duplicate workflow files. This applies to all three workflow types (code, cloud, SaaS). For example, if a cloud-scan workflow already has AWS steps and the user later adds GCP, add the GCP job to the existing workflow file rather than creating a new one. Always deduplicate — if a provider's or tool's steps are already present, skip adding them again.
 
 **Update `.compliance/status.md` after each workflow is generated:** Add or update the workflow's row in the "Workflows Generated" table with the workflow file path, tools included, and creation date. Also mark the `Workflow` column as `[x]` for each tool included in that workflow in the "SaaS Tool Configuration" table.
 
@@ -549,7 +565,7 @@ The agent generates integrations on demand — for tools not in the catalog, it 
 
 ## Evidence Scripts Reference
 
-Pre-built scripts for 21 SaaS tools: [assets/scripts/](assets/scripts/) — copy to `.compliance/scripts/`, add config, test.
+Pre-built scripts for 23 SaaS tools and 3 cloud providers: [assets/scripts/](assets/scripts/) — copy to `.compliance/scripts/`, add config, test.
 
 Script templates, per-tool config convention, collect-all.sh runner, and test-first workflow: [references/script-templates.md](references/script-templates.md)
 
@@ -558,6 +574,7 @@ Script templates, per-tool config convention, collect-all.sh runner, and test-fi
 Workflow templates, schedule mapping, output formats, and secrets setup: [references/workflow-templates.md](references/workflow-templates.md)
 
 Code scan YAML template: [assets/workflow-compliance-code-scan.yml.template](assets/workflow-compliance-code-scan.yml.template)
+Cloud scan YAML template: [assets/workflow-compliance-cloud-scan.yml.template](assets/workflow-compliance-cloud-scan.yml.template)
 SaaS scan YAML template: [assets/workflow-compliance-saas-scan.yml.template](assets/workflow-compliance-saas-scan.yml.template)
 
 ---
