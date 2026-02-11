@@ -1,6 +1,7 @@
 # AWS Cloud Scanning Patterns
 
 For cloud scanning of AWS infrastructure.
+**Pre-built script:** `assets/scripts/aws.sh` — copy to `.compliance/scripts/` and configure with `aws.config.json`.
 See [cloud-shared.md](cloud-shared.md) for authentication, safety rules, and evidence formatting.
 
 ## Prerequisites

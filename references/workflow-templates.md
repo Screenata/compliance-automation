@@ -184,6 +184,8 @@ The script itself contains the grep/find patterns. See [script-templates.md](scr
 
 ## Cloud Scan Workflow Template (`compliance-cloud-scan.yml`)
 
+Use the YAML template at [assets/workflow-compliance-cloud-scan.yml.template](../assets/workflow-compliance-cloud-scan.yml.template) as the base structure. Remove jobs for providers the user hasn't configured.
+
 Generate this workflow based on the cloud providers available. Structure:
 
 ```yaml
@@ -424,5 +426,7 @@ When the user generates multiple policies across sessions:
 2. **If they exist**: Add new policy/tool steps to the existing workflow rather than overwriting
 3. **If they don't exist**: Create new workflow files from the templates
 4. **Deduplication**: If a policy's or tool's steps are already present, skip adding them again
+
+This applies to all three workflow types — code-scan, cloud-scan, and saas-scan. For example, if a cloud-scan workflow already has an AWS job and the user later configures GCP, add the GCP job to the existing workflow rather than creating a new file. Similarly, if new SaaS tools are added in a later session, append their steps to the existing saas-scan workflow.
 
 This ensures the workflows grow incrementally as more policies are generated and more tools are configured.
